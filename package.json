@@ -1,11 +1,11 @@
 {
     "private": true,
     "scripts": {
-        "doc": "cargo doc --no-deps --all-features",
-        "test": "cargo test --release",
+        "doc": "cargo doc --workspace --no-deps",
+        "test": "cargo test --workspace",
         "fmt": "cargo fmt --all",
+        "clippy": "cargo clippy --workspace --all-targets -- -D warnings",
         "p": "git push && git push --tags --prune",
-        "reset": "git reset Head~ --soft",
         "u": "cargo upgrade --workspace"
     }
 }

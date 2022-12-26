@@ -1,0 +1,16 @@
+[package]
+name = "apollo-render"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Apollo：CPU / SVG / GPU 共用的渲染器合同"
+publish = false
+
+[dependencies]
+apollo-types = { workspace = true }
+apollo-scene = { workspace = true }
+
+[lints.rust]
+missing_docs = "warn"
+unsafe_code = "forbid"

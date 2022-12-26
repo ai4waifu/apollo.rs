@@ -1,0 +1,26 @@
+[package]
+name = "apollo"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Apollo 绘图引擎 — 稳定公共 Rust 门面"
+publish = false
+
+[features]
+default = []
+## 可选 WGPU / WebGPU 后端（核心构建不需要）。
+wgpu = ["dep:apollo-backend-wgpu"]
+
+[dependencies]
+apollo-types = { workspace = true }
+apollo-data = { workspace = true }
+apollo-grammar = { workspace = true }
+apollo-scene = { workspace = true }
+apollo-layout = { workspace = true }
+apollo-render = { workspace = true }
+apollo-backend-wgpu = { workspace = true, optional = true }
+
+[lints.rust]
+missing_docs = "warn"
+unsafe_code = "forbid"

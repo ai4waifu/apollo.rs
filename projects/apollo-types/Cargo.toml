@@ -1,0 +1,14 @@
+[package]
+name = "apollo-types"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Apollo：ID、颜色、单位、范围与诊断合同"
+publish = false
+
+[dependencies]
+
+[lints.rust]
+missing_docs = "warn"
+unsafe_code = "forbid"
