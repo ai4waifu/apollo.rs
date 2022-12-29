@@ -4,5 +4,12 @@
 
 #![deny(missing_docs)]
 
-/// A0 workspace 冻结用的 crate 占位标记。
-pub const CRATE_NAME: &str = "apollo-types";
+mod color;
+mod diagnostic;
+mod ids;
+mod range;
+
+pub use color::Rgba;
+pub use diagnostic::{Diagnostic, DiagnosticCode, Result, Severity};
+pub use ids::{NodeId, SerializationVersion};
+pub use range::Interval;

@@ -8,6 +8,7 @@ description = "Apollo：ID、颜色、单位、范围与诊断合同"
 publish = false
 
 [dependencies]
+serde = { workspace = true }
 
 [lints.rust]
 missing_docs = "warn"

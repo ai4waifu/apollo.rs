@@ -30,6 +30,7 @@ apollo-layout = { path = "projects/apollo-layout" }
 apollo-render = { path = "projects/apollo-render" }
 apollo-backend-wgpu = { path = "projects/apollo-backend-wgpu" }
 apollo = { path = "projects/apollo" }
+serde = { version = "1", features = ["derive"] }
 
 [profile.release]
 opt-level = 3
