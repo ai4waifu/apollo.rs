@@ -4,7 +4,8 @@
 
 #![deny(missing_docs)]
 
-pub use apollo_types::CRATE_NAME as TYPES_CRATE;
+mod column;
+mod table;
 
-/// A0 workspace 冻结用的 crate 占位标记。
-pub const CRATE_NAME: &str = "apollo-data";
+pub use column::{Column, FloatColumn};
+pub use table::ColumnTable;
