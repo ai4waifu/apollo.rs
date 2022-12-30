@@ -1,7 +1,10 @@
 # `apollo-grammar`
 
-声明式 Grammar of Graphics：mapping、图层（stat + geom + position）、scale、
-坐标、分面、theme 与 guides。
+声明式 Grammar of Graphics。A1 可构造并校验：
+
+```text
+ColumnTable → PlotSpec { x, y, geom_line } + continuous scale + cartesian2d
+```
 
 拥有 `PlotSpec`。不拥有 Scene IR 或渲染后端。
 

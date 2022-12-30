@@ -4,5 +4,16 @@
 
 #![deny(missing_docs)]
 
-/// A0 workspace 冻结用的 crate 占位标记。
-pub const CRATE_NAME: &str = "apollo-grammar";
+mod coordinate;
+mod layer;
+mod mapping;
+mod plot;
+mod scale;
+mod validate;
+
+pub use coordinate::CoordinateSpec;
+pub use layer::{GeomLine, GeomSpec, LayerParameters, LayerSpec, PositionSpec, StatSpec};
+pub use mapping::{AestheticExpr, Mapping};
+pub use plot::{DataRef, PlotSpec, ThemeSpec};
+pub use scale::{ScaleKind, ScaleSpec};
+pub use validate::validate_plot;
