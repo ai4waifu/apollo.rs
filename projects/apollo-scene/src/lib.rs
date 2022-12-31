@@ -4,5 +4,11 @@
 
 #![deny(missing_docs)]
 
-/// A0 workspace 冻结用的 crate 占位标记。
-pub const CRATE_NAME: &str = "apollo-scene";
+mod arena;
+mod node;
+mod scene;
+
+pub use apollo_types::NodeId as SceneNodeId;
+pub use arena::SceneArena;
+pub use node::{AxisNode, Point2, PolylineNode, SceneNode, SceneNodeKind};
+pub use scene::{CameraSpec, Scene, SceneMetadata, Viewport};
