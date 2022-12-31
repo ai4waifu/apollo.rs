@@ -1,6 +1,6 @@
 # `apollo`
 
-Apollo 绘图引擎的稳定公共 Rust 门面。负责 re-export 各层合同，并在垂直切片落地后托管 builder。
+Apollo 绘图引擎的稳定公共 Rust 门面。A1 起 re-export `ColumnTable`、`PlotSpec` 与 `validate_plot`。
 
 可选 feature：
 

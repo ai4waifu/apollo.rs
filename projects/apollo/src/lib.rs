@@ -6,15 +6,12 @@
 
 #![deny(missing_docs)]
 
-pub use apollo_data::CRATE_NAME as DATA_CRATE;
-pub use apollo_grammar::CRATE_NAME as GRAMMAR_CRATE;
-pub use apollo_layout::CRATE_NAME as LAYOUT_CRATE;
-pub use apollo_render::CRATE_NAME as RENDER_CRATE;
-pub use apollo_scene::CRATE_NAME as SCENE_CRATE;
-pub use apollo_types::CRATE_NAME as TYPES_CRATE;
-
-/// A0 workspace 冻结用的 crate 占位标记。
-pub const CRATE_NAME: &str = "apollo";
+pub use apollo_data::{Column, ColumnTable, FloatColumn};
+pub use apollo_grammar::{
+    AestheticExpr, CoordinateSpec, DataRef, GeomLine, GeomSpec, LayerParameters, LayerSpec, Mapping, PlotSpec, PositionSpec,
+    ScaleKind, ScaleSpec, StatSpec, ThemeSpec, validate_plot,
+};
+pub use apollo_types::{Diagnostic, DiagnosticCode, Interval, NodeId, Result, Rgba, SerializationVersion, Severity};
 
 #[cfg(feature = "wgpu")]
-pub use apollo_backend_wgpu::CRATE_NAME as WGPU_CRATE;
+pub use apollo_backend_wgpu as backend_wgpu;
