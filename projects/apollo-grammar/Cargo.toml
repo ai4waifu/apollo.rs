@@ -10,6 +10,7 @@ publish = false
 [dependencies]
 apollo-types = { workspace = true }
 apollo-data = { workspace = true }
+apollo-scene = { workspace = true }
 serde = { workspace = true }
 
 [lints.rust]

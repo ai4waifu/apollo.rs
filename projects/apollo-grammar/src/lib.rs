@@ -4,6 +4,7 @@
 
 #![deny(missing_docs)]
 
+mod compile;
 mod coordinate;
 mod layer;
 mod mapping;
@@ -11,6 +12,7 @@ mod plot;
 mod scale;
 mod validate;
 
+pub use compile::{CompileOptions, compile_plot};
 pub use coordinate::CoordinateSpec;
 pub use layer::{GeomLine, GeomSpec, LayerParameters, LayerSpec, PositionSpec, StatSpec};
 pub use mapping::{AestheticExpr, Mapping};
