@@ -1,6 +1,6 @@
 # `apollo`
 
-Apollo 绘图引擎的稳定公共 Rust 门面。A1 起 re-export `ColumnTable`、`PlotSpec` 与 `validate_plot`。
+Apollo 绘图引擎的稳定公共 Rust 门面。A1/A2 起 re-export `ColumnTable`、`PlotSpec`、`compile_plot` 与 Scene IR。
 
 可选 feature：
 

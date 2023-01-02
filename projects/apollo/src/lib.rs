@@ -8,8 +8,12 @@
 
 pub use apollo_data::{Column, ColumnTable, FloatColumn};
 pub use apollo_grammar::{
-    AestheticExpr, CoordinateSpec, DataRef, GeomLine, GeomSpec, LayerParameters, LayerSpec, Mapping, PlotSpec, PositionSpec,
-    ScaleKind, ScaleSpec, StatSpec, ThemeSpec, validate_plot,
+    AestheticExpr, CompileOptions, CoordinateSpec, DataRef, GeomLine, GeomSpec, LayerParameters, LayerSpec, Mapping, PlotSpec,
+    PositionSpec, ScaleKind, ScaleSpec, StatSpec, ThemeSpec, compile_plot, validate_plot,
+};
+pub use apollo_scene::{
+    AxisNode, CameraSpec, Point2, PolylineNode, Scene, SceneArena, SceneMetadata, SceneNode, SceneNodeId, SceneNodeKind,
+    Viewport,
 };
 pub use apollo_types::{Diagnostic, DiagnosticCode, Interval, NodeId, Result, Rgba, SerializationVersion, Severity};
 
