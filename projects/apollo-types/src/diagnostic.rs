@@ -28,6 +28,10 @@ pub enum DiagnosticCode {
     UnsupportedSpec,
     /// 校验失败（通用）。
     ValidationFailed,
+    /// 渲染失败。
+    RenderFailed,
+    /// 渲染目标与后端不匹配。
+    UnsupportedTarget,
 }
 
 impl DiagnosticCode {
@@ -41,6 +45,8 @@ impl DiagnosticCode {
             Self::InvalidLayer => "apollo_invalid_layer",
             Self::UnsupportedSpec => "apollo_unsupported_spec",
             Self::ValidationFailed => "apollo_validation_failed",
+            Self::RenderFailed => "apollo_render_failed",
+            Self::UnsupportedTarget => "apollo_unsupported_target",
         }
     }
 }
