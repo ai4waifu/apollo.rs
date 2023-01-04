@@ -1,8 +1,12 @@
 # `apollo-render`
 
-CPU 栅格、SVG 与 GPU 后端共用的 renderer trait 与合同。
+CPU、SVG 与 GPU 后端共用的渲染器合同。A2 提供：
 
-后端只消费 Scene IR，不得重新推断 grammar、scale 或 layout。
+- `Renderer` trait
+- `CpuRasterRenderer`（确定性 RGBA8 reference）
+- `SvgRenderer`（静态矢量导出）
+
+后端只消费 Scene IR，不接收 `PlotSpec`。
 
 ```sh
 cargo test -p apollo-render
