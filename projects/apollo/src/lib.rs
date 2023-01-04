@@ -11,6 +11,10 @@ pub use apollo_grammar::{
     AestheticExpr, CompileOptions, CoordinateSpec, DataRef, GeomLine, GeomSpec, LayerParameters, LayerSpec, Mapping, PlotSpec,
     PositionSpec, ScaleKind, ScaleSpec, StatSpec, ThemeSpec, compile_plot, validate_plot,
 };
+pub use apollo_render::{
+    Capability, CpuRasterRenderer, FrameReport, PreparedScene, RenderTarget, Renderer, RendererCapabilities, RgbaImage,
+    SvgRenderer, render_rgba8, render_svg,
+};
 pub use apollo_scene::{
     AxisNode, CameraSpec, Point2, PolylineNode, Scene, SceneArena, SceneMetadata, SceneNode, SceneNodeId, SceneNodeKind,
     Viewport,
