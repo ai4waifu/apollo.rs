@@ -10,7 +10,8 @@ Apollo 是基于 Grammar of Graphics 的纯 Rust 绘图引擎。它将声明式�
 apollo-types → apollo-data → apollo-grammar
                  ↘
                   apollo-scene → apollo-layout
-                              → apollo-render → apollo-backend-wgpu（可选）
+                              → apollo-render → apollo-backend-svg（默认）
+                                              → apollo-backend-wgpu（可选）
                                               → apollo（门面）
 ```
 
@@ -21,7 +22,8 @@ apollo-types → apollo-data → apollo-grammar
 | [`apollo-grammar`](projects/apollo-grammar/readme.md) | PlotSpec / ggplot 风格图形语法 |
 | [`apollo-scene`](projects/apollo-scene/readme.md) | 后端无关 Scene IR |
 | [`apollo-layout`](projects/apollo-layout/readme.md) | 2D/3D、图、树与标签布局 |
-| [`apollo-render`](projects/apollo-render/readme.md) | 渲染器合同（CPU / SVG / GPU） |
+| [`apollo-render`](projects/apollo-render/readme.md) | 渲染器合同与 CPU reference |
+| [`apollo-backend-svg`](projects/apollo-backend-svg/readme.md) | SVG 矢量后端 |
 | [`apollo-backend-wgpu`](projects/apollo-backend-wgpu/readme.md) | 可选 WGPU / WebGPU 后端 |
 | [`apollo`](projects/apollo/readme.md) | 稳定公共 Rust 门面 |
 
@@ -31,11 +33,12 @@ apollo-types → apollo-data → apollo-grammar
 
 ```sh
 cargo test --workspace
+cargo test -p apollo --features wgpu
 cargo fmt --all -- --check
 cargo clippy --workspace --all-targets -- -D warnings
 ```
 
-默认构建 `apollo` 不链接 GPU SDK。需要可选后端时再启用 `wgpu` feature。
+默认构建链接 SVG，不链接 GPU SDK。需要 GPU 时启用 `wgpu` feature。
 
 ## 许可证
 

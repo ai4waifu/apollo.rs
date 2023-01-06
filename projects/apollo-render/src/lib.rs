@@ -1,21 +1,21 @@
-//! Apollo 渲染器合同 — CPU、SVG、GPU 后端共用。
+//! Apollo 渲染器合同 — CPU reference 与后端共用合同。
 //!
 //! 只消费 Scene IR。不得重新推断 stat、scale 或 layout。
+//! SVG / WGPU 实现分别在 `apollo-backend-svg` 与 `apollo-backend-wgpu`。
 
 #![deny(missing_docs)]
 
 mod cpu;
 mod prepare;
 mod report;
-mod svg;
 mod target;
 mod walk;
 
 pub use cpu::CpuRasterRenderer;
 pub use prepare::PreparedScene;
 pub use report::{Capability, FrameReport, RendererCapabilities};
-pub use svg::SvgRenderer;
-pub use target::{RenderTarget, RgbaImage};
+pub use target::{RenderTarget, RgbaImage, color_to_bytes, color_to_css};
+pub use walk::{Drawable, walk_drawables};
 
 use apollo_scene::Scene;
 use apollo_types::Result;
@@ -32,7 +32,7 @@ pub trait Renderer {
     fn render(&mut self, scene: &PreparedScene, target: &mut RenderTarget) -> Result<FrameReport>;
 }
 
-/// 便捷：Scene → RGBA8 位图。
+/// 便捷：Scene → RGBA8 位图（CPU reference）。
 pub fn render_rgba8(scene: &Scene) -> Result<RgbaImage> {
     let mut renderer = CpuRasterRenderer::new();
     let prepared = renderer.prepare(scene)?;
@@ -41,17 +41,5 @@ pub fn render_rgba8(scene: &Scene) -> Result<RgbaImage> {
     match target {
         RenderTarget::Rgba8(image) => Ok(image),
         RenderTarget::Svg(_) => unreachable!("cpu renderer only writes rgba8"),
-    }
-}
-
-/// 便捷：Scene → SVG 文档字符串。
-pub fn render_svg(scene: &Scene) -> Result<String> {
-    let mut renderer = SvgRenderer::new();
-    let prepared = renderer.prepare(scene)?;
-    let mut target = RenderTarget::Svg(String::new());
-    renderer.render(&prepared, &mut target)?;
-    match target {
-        RenderTarget::Svg(document) => Ok(document),
-        RenderTarget::Rgba8(_) => unreachable!("svg renderer only writes svg"),
     }
 }

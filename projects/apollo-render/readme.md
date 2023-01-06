@@ -1,12 +1,13 @@
 # `apollo-render`
 
-CPU、SVG 与 GPU 后端共用的渲染器合同。A2 提供：
+渲染器合同与 CPU 确定性 reference：
 
 - `Renderer` trait
-- `CpuRasterRenderer`（确定性 RGBA8 reference）
-- `SvgRenderer`（静态矢量导出）
+- `PreparedScene` / `RenderTarget` / `RgbaImage`
+- `CpuRasterRenderer` / `render_rgba8`
+- `walk_drawables`（供各 backend 复用）
 
-后端只消费 Scene IR，不接收 `PlotSpec`。
+SVG 与 WGPU 分别见 `apollo-backend-svg`、`apollo-backend-wgpu`。
 
 ```sh
 cargo test -p apollo-render

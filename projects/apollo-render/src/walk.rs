@@ -4,7 +4,8 @@ use apollo_scene::{AxisNode, PolylineNode, Scene, SceneNodeKind};
 use apollo_types::{Diagnostic, DiagnosticCode, NodeId, Result};
 
 /// 可绘制图元。
-pub(crate) enum Drawable<'a> {
+#[derive(Debug)]
+pub enum Drawable<'a> {
     /// 折线。
     Polyline(&'a PolylineNode),
     /// 坐标轴。
@@ -12,7 +13,7 @@ pub(crate) enum Drawable<'a> {
 }
 
 /// 前序遍历，对每个可绘制节点调用 `visitor`。
-pub(crate) fn walk_drawables(scene: &Scene, mut visitor: impl FnMut(Drawable<'_>) -> Result<()>) -> Result<()> {
+pub fn walk_drawables(scene: &Scene, mut visitor: impl FnMut(Drawable<'_>) -> Result<()>) -> Result<()> {
     walk_node(scene, scene.root, &mut visitor)
 }
 

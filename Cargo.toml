@@ -8,6 +8,7 @@ default-members = [
     "projects/apollo-scene",
     "projects/apollo-layout",
     "projects/apollo-render",
+    "projects/apollo-backend-svg",
     "projects/apollo-backend-wgpu",
     "projects/apollo",
 ]
@@ -28,9 +29,13 @@ apollo-grammar = { path = "projects/apollo-grammar" }
 apollo-scene = { path = "projects/apollo-scene" }
 apollo-layout = { path = "projects/apollo-layout" }
 apollo-render = { path = "projects/apollo-render" }
+apollo-backend-svg = { path = "projects/apollo-backend-svg" }
 apollo-backend-wgpu = { path = "projects/apollo-backend-wgpu" }
 apollo = { path = "projects/apollo" }
 serde = { version = "1", features = ["derive"] }
+wgpu = { version = "=24.0.5", default-features = true }
+pollster = { version = "=0.4.0" }
+bytemuck = { version = "=1.25.2", features = ["derive"] }
 
 [profile.release]
 opt-level = 3

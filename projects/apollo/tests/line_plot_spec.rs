@@ -31,3 +31,17 @@ fn facade_renders_cpu_and_svg() {
     let svg = render_svg(&scene).unwrap();
     assert!(svg.contains("<polyline"));
 }
+
+#[cfg(feature = "wgpu")]
+#[test]
+fn facade_renders_wgpu_when_available() {
+    use apollo::{WgpuRenderer, render_rgba8_wgpu};
+    if !WgpuRenderer::is_available() {
+        return;
+    }
+    let table = ColumnTable::new().push_float("x", vec![0.0, 1.0, 2.0]).unwrap().push_float("y", vec![1.0, 2.0, 3.0]).unwrap();
+    let plot = PlotSpec::new(table).mapping(Mapping::xy("x", "y")).layer(LayerSpec::geom_line());
+    let scene = compile_plot(&plot, CompileOptions::default()).unwrap();
+    let image = render_rgba8_wgpu(&scene).unwrap();
+    assert!(image.non_white_count() > 0);
+}

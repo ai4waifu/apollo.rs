@@ -1,15 +1,11 @@
-//! SVG 矢量后端。
+//! SVG 渲染器实现。
 
+use apollo_render::{
+    Capability, Drawable, FrameReport, PreparedScene, RenderTarget, Renderer, RendererCapabilities, color_to_css,
+    walk_drawables,
+};
 use apollo_scene::{AxisNode, Point2, PolylineNode, Scene};
 use apollo_types::{Diagnostic, DiagnosticCode, Result};
-
-use crate::{
-    Renderer,
-    prepare::PreparedScene,
-    report::{Capability, FrameReport, RendererCapabilities},
-    target::{RenderTarget, color_to_css},
-    walk::{Drawable, walk_drawables},
-};
 
 /// SVG 渲染器。
 #[derive(Debug, Default, Clone, Copy)]
@@ -75,6 +71,18 @@ impl Renderer for SvgRenderer {
         );
 
         Ok(FrameReport { primitive_count })
+    }
+}
+
+/// 便捷：Scene → SVG 文档字符串。
+pub fn render_svg(scene: &Scene) -> Result<String> {
+    let mut renderer = SvgRenderer::new();
+    let prepared = renderer.prepare(scene)?;
+    let mut target = RenderTarget::Svg(String::new());
+    renderer.render(&prepared, &mut target)?;
+    match target {
+        RenderTarget::Svg(document) => Ok(document),
+        RenderTarget::Rgba8(_) => unreachable!("svg renderer only writes svg"),
     }
 }
 

@@ -71,7 +71,8 @@ pub enum RenderTarget {
     Svg(String),
 }
 
-pub(crate) fn color_to_bytes(color: Rgba) -> [u8; 4] {
+/// 颜色转 RGBA8 字节。
+pub fn color_to_bytes(color: Rgba) -> [u8; 4] {
     [
         (color.r.clamp(0.0, 1.0) * 255.0).round() as u8,
         (color.g.clamp(0.0, 1.0) * 255.0).round() as u8,
@@ -80,7 +81,8 @@ pub(crate) fn color_to_bytes(color: Rgba) -> [u8; 4] {
     ]
 }
 
-pub(crate) fn color_to_css(color: Rgba) -> String {
+/// 颜色转 CSS。
+pub fn color_to_css(color: Rgba) -> String {
     let [r, g, b, a] = color_to_bytes(color);
     if a == 255 { format!("rgb({r},{g},{b})") } else { format!("rgba({r},{g},{b},{})", f32::from(a) / 255.0) }
 }

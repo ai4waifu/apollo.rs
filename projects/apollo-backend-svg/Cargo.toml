@@ -1,15 +1,16 @@
 [package]
-name = "apollo-render"
+name = "apollo-backend-svg"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 authors.workspace = true
-description = "Apollo：渲染器合同与 CPU reference"
+description = "Apollo：SVG 矢量渲染后端"
 publish = false
 
 [dependencies]
 apollo-types = { workspace = true }
 apollo-scene = { workspace = true }
+apollo-render = { workspace = true }
 
 [dev-dependencies]
 apollo-data = { workspace = true }
