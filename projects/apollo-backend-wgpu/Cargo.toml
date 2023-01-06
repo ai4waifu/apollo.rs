@@ -11,6 +11,14 @@ publish = false
 apollo-types = { workspace = true }
 apollo-scene = { workspace = true }
 apollo-render = { workspace = true }
+wgpu = { workspace = true }
+pollster = { workspace = true }
+bytemuck = { workspace = true }
+
+[dev-dependencies]
+apollo-data = { workspace = true }
+apollo-grammar = { workspace = true }
+apollo-render = { workspace = true }
 
 [lints.rust]
 missing_docs = "warn"
