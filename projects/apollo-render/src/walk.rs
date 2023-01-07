@@ -1,6 +1,6 @@
 //! 遍历 Scene 树并回调可绘制节点。
 
-use apollo_scene::{AxisNode, PolylineNode, Scene, SceneNodeKind};
+use apollo_scene::{AxisNode, Mesh3Node, MeshNode, Points3Node, PointsNode, PolylineNode, Scene, SceneNodeKind, TextNode};
 use apollo_types::{Diagnostic, DiagnosticCode, NodeId, Result};
 
 /// 可绘制图元。
@@ -8,6 +8,16 @@ use apollo_types::{Diagnostic, DiagnosticCode, NodeId, Result};
 pub enum Drawable<'a> {
     /// 折线。
     Polyline(&'a PolylineNode),
+    /// 散点。
+    Points(&'a PointsNode),
+    /// 填充网格。
+    Mesh(&'a MeshNode),
+    /// 三维网格。
+    Mesh3(&'a Mesh3Node),
+    /// 三维点云。
+    Points3(&'a Points3Node),
+    /// 文本。
+    Text(&'a TextNode),
     /// 坐标轴。
     Axis(&'a AxisNode),
 }
@@ -28,6 +38,11 @@ fn walk_node(scene: &Scene, id: NodeId, visitor: &mut impl FnMut(Drawable<'_>) -
             }
         }
         SceneNodeKind::Polyline(polyline) => visitor(Drawable::Polyline(polyline))?,
+        SceneNodeKind::Points(points) => visitor(Drawable::Points(points))?,
+        SceneNodeKind::Mesh(mesh) => visitor(Drawable::Mesh(mesh))?,
+        SceneNodeKind::Mesh3(mesh) => visitor(Drawable::Mesh3(mesh))?,
+        SceneNodeKind::Points3(points) => visitor(Drawable::Points3(points))?,
+        SceneNodeKind::Text(text) => visitor(Drawable::Text(text))?,
         SceneNodeKind::Axis(axis) => visitor(Drawable::Axis(axis))?,
     }
     Ok(())

@@ -5,10 +5,16 @@
 #![deny(missing_docs)]
 
 mod arena;
+mod camera;
 mod node;
+mod pick;
 mod scene;
 
 pub use apollo_types::NodeId as SceneNodeId;
 pub use arena::SceneArena;
-pub use node::{AxisNode, Point2, PolylineNode, SceneNode, SceneNodeKind};
-pub use scene::{CameraSpec, Scene, SceneMetadata, Viewport};
+pub use camera::{CameraSpec, Ray, ScreenPoint, project_to_screen, screen_to_ray, try_project_to_screen};
+pub use node::{
+    AxisNode, Mesh3Node, MeshNode, Point2, Points3Node, PointsNode, PolylineNode, Rect2, SceneNode, SceneNodeKind, TextNode,
+};
+pub use pick::pick_at;
+pub use scene::{Scene, SceneMetadata, Viewport};

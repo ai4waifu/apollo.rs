@@ -1,6 +1,6 @@
 # `apollo-data`
 
-列式表、浮点列与基础校验。A1 首切片支持 `ColumnTable` + `FloatColumn`。
+列式表、规则网格与图/树数据。支持 `ColumnTable`、`GridData`、`GraphData`、`TreeData`。
 
 不含图形语法或渲染器代码。
 

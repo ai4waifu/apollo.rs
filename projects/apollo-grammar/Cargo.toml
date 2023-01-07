@@ -11,6 +11,7 @@ publish = false
 apollo-types = { workspace = true }
 apollo-data = { workspace = true }
 apollo-scene = { workspace = true }
+apollo-layout = { workspace = true }
 serde = { workspace = true }
 
 [lints.rust]

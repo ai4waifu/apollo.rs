@@ -7,7 +7,10 @@ use apollo_scene::Scene;
 use apollo_types::{Diagnostic, DiagnosticCode, Result};
 use wgpu::util::DeviceExt;
 
-use crate::{geometry::collect_line_vertices, shader::LINE_SHADER};
+use crate::{
+    geometry::{LineVertex, MeshVertex, collect_geometry},
+    shader::LINE_SHADER,
+};
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, bytemuck::Pod, bytemuck::Zeroable)]
@@ -19,7 +22,8 @@ struct Uniforms {
 struct GpuContext {
     device: wgpu::Device,
     queue: wgpu::Queue,
-    pipeline: wgpu::RenderPipeline,
+    line_pipeline: wgpu::RenderPipeline,
+    mesh_pipeline: wgpu::RenderPipeline,
     bind_group_layout: wgpu::BindGroupLayout,
 }
 
@@ -79,11 +83,11 @@ impl Renderer for WgpuRenderer {
             return Err(Diagnostic::error(DiagnosticCode::UnsupportedTarget, "WgpuRenderer 需要 Rgba8 目标"));
         };
 
-        let vertices = collect_line_vertices(&prepared.scene)?;
+        let (lines, mesh) = collect_geometry(&prepared.scene)?;
         let width = prepared.scene.viewport.width.max(1.0).round() as u32;
         let height = prepared.scene.viewport.height.max(1.0).round() as u32;
-        *image = render_offscreen(self.ensure_ctx()?, width, height, &vertices)?;
-        Ok(FrameReport { primitive_count: (vertices.len() / 2) as u32 })
+        *image = render_offscreen(self.ensure_ctx()?, width, height, &lines, &mesh)?;
+        Ok(FrameReport { primitive_count: (lines.len() / 2 + mesh.len() / 3) as u32 })
     }
 }
 
@@ -148,40 +152,47 @@ async fn create_context() -> Result<GpuContext> {
         push_constant_ranges: &[],
     });
 
-    let pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-        label: Some("apollo-line-pipeline"),
-        layout: Some(&pipeline_layout),
-        vertex: wgpu::VertexState {
-            module: &shader,
-            entry_point: Some("vs_main"),
-            compilation_options: wgpu::PipelineCompilationOptions::default(),
-            buffers: &[wgpu::VertexBufferLayout {
-                array_stride: std::mem::size_of::<crate::geometry::LineVertex>() as wgpu::BufferAddress,
-                step_mode: wgpu::VertexStepMode::Vertex,
-                attributes: &wgpu::vertex_attr_array![0 => Float32x2, 1 => Float32x4],
-            }],
-        },
-        fragment: Some(wgpu::FragmentState {
-            module: &shader,
-            entry_point: Some("fs_main"),
-            compilation_options: wgpu::PipelineCompilationOptions::default(),
-            targets: &[Some(wgpu::ColorTargetState {
-                format: wgpu::TextureFormat::Rgba8UnormSrgb,
-                blend: Some(wgpu::BlendState::ALPHA_BLENDING),
-                write_mask: wgpu::ColorWrites::ALL,
-            })],
-        }),
-        primitive: wgpu::PrimitiveState { topology: wgpu::PrimitiveTopology::LineList, ..Default::default() },
-        depth_stencil: None,
-        multisample: wgpu::MultisampleState::default(),
-        multiview: None,
-        cache: None,
-    });
+    let vertex_buffers = [wgpu::VertexBufferLayout {
+        array_stride: std::mem::size_of::<LineVertex>() as wgpu::BufferAddress,
+        step_mode: wgpu::VertexStepMode::Vertex,
+        attributes: &wgpu::vertex_attr_array![0 => Float32x2, 1 => Float32x4],
+    }];
 
-    Ok(GpuContext { device, queue, pipeline, bind_group_layout })
+    let make_pipeline = |topology: wgpu::PrimitiveTopology, label: &str| {
+        device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+            label: Some(label),
+            layout: Some(&pipeline_layout),
+            vertex: wgpu::VertexState {
+                module: &shader,
+                entry_point: Some("vs_main"),
+                compilation_options: wgpu::PipelineCompilationOptions::default(),
+                buffers: &vertex_buffers,
+            },
+            fragment: Some(wgpu::FragmentState {
+                module: &shader,
+                entry_point: Some("fs_main"),
+                compilation_options: wgpu::PipelineCompilationOptions::default(),
+                targets: &[Some(wgpu::ColorTargetState {
+                    format: wgpu::TextureFormat::Rgba8UnormSrgb,
+                    blend: Some(wgpu::BlendState::ALPHA_BLENDING),
+                    write_mask: wgpu::ColorWrites::ALL,
+                })],
+            }),
+            primitive: wgpu::PrimitiveState { topology, ..Default::default() },
+            depth_stencil: None,
+            multisample: wgpu::MultisampleState::default(),
+            multiview: None,
+            cache: None,
+        })
+    };
+
+    let line_pipeline = make_pipeline(wgpu::PrimitiveTopology::LineList, "apollo-line-pipeline");
+    let mesh_pipeline = make_pipeline(wgpu::PrimitiveTopology::TriangleList, "apollo-mesh-pipeline");
+
+    Ok(GpuContext { device, queue, line_pipeline, mesh_pipeline, bind_group_layout })
 }
 
-fn render_offscreen(ctx: &GpuContext, width: u32, height: u32, vertices: &[crate::geometry::LineVertex]) -> Result<RgbaImage> {
+fn render_offscreen(ctx: &GpuContext, width: u32, height: u32, lines: &[LineVertex], mesh: &[MeshVertex]) -> Result<RgbaImage> {
     let texture = ctx.device.create_texture(&wgpu::TextureDescriptor {
         label: Some("apollo-offscreen"),
         size: wgpu::Extent3d { width, height, depth_or_array_layers: 1 },
@@ -206,13 +217,23 @@ fn render_offscreen(ctx: &GpuContext, width: u32, height: u32, vertices: &[crate
         entries: &[wgpu::BindGroupEntry { binding: 0, resource: uniform_buffer.as_entire_binding() }],
     });
 
-    let vertex_buffer = if vertices.is_empty() {
+    let line_buffer = if lines.is_empty() {
         None
     }
     else {
         Some(ctx.device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
             label: Some("apollo-line-vertices"),
-            contents: bytemuck::cast_slice(vertices),
+            contents: bytemuck::cast_slice(lines),
+            usage: wgpu::BufferUsages::VERTEX,
+        }))
+    };
+    let mesh_buffer = if mesh.is_empty() {
+        None
+    }
+    else {
+        Some(ctx.device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("apollo-mesh-vertices"),
+            contents: bytemuck::cast_slice(mesh),
             usage: wgpu::BufferUsages::VERTEX,
         }))
     };
@@ -233,11 +254,16 @@ fn render_offscreen(ctx: &GpuContext, width: u32, height: u32, vertices: &[crate
             timestamp_writes: None,
             occlusion_query_set: None,
         });
-        pass.set_pipeline(&ctx.pipeline);
         pass.set_bind_group(0, &bind_group, &[]);
-        if let Some(buffer) = &vertex_buffer {
+        if let Some(buffer) = &mesh_buffer {
+            pass.set_pipeline(&ctx.mesh_pipeline);
             pass.set_vertex_buffer(0, buffer.slice(..));
-            pass.draw(0..vertices.len() as u32, 0..1);
+            pass.draw(0..mesh.len() as u32, 0..1);
+        }
+        if let Some(buffer) = &line_buffer {
+            pass.set_pipeline(&ctx.line_pipeline);
+            pass.set_vertex_buffer(0, buffer.slice(..));
+            pass.draw(0..lines.len() as u32, 0..1);
         }
     }
 
@@ -293,7 +319,6 @@ fn render_offscreen(ctx: &GpuContext, width: u32, height: u32, vertices: &[crate
     drop(data);
     output_buffer.unmap();
 
-    // 纹理是 sRGB 存储，读回已是 8bit；场景 y 向上、GPU NDC y 向上，与位图 y 向下相反，需翻转行。
     let mut flipped = vec![0_u8; pixels.len()];
     let row_bytes = (width * 4) as usize;
     for y in 0..height as usize {

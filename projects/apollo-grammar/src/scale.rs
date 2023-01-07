@@ -3,10 +3,12 @@
 use apollo_types::Interval;
 
 /// Scale 种类。
-#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum ScaleKind {
     /// 连续线性。
     Continuous,
+    /// 以 10 为底的对数（domain 须为正）。
+    Log10,
 }
 
 /// 单个 scale 规格。
@@ -29,5 +31,21 @@ impl ScaleSpec {
     /// 连续 y scale。
     pub fn continuous_y() -> Self {
         Self { aesthetic: "y".into(), kind: ScaleKind::Continuous, domain: None }
+    }
+
+    /// log10 y scale。
+    pub fn log10_y() -> Self {
+        Self { aesthetic: "y".into(), kind: ScaleKind::Log10, domain: None }
+    }
+
+    /// log10 x scale。
+    pub fn log10_x() -> Self {
+        Self { aesthetic: "x".into(), kind: ScaleKind::Log10, domain: None }
+    }
+
+    /// 设置显式 domain。
+    pub fn with_domain(mut self, domain: Interval) -> Self {
+        self.domain = Some(domain);
+        self
     }
 }

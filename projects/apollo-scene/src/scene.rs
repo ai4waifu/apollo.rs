@@ -2,14 +2,7 @@
 
 use apollo_types::NodeId;
 
-use crate::arena::SceneArena;
-
-/// 相机占位（A2：正交 2D，后续 A5 扩展）。
-#[derive(Debug, Clone, PartialEq, Eq, Default, serde::Serialize, serde::Deserialize)]
-pub struct CameraSpec {
-    /// 正交二维。
-    pub orthographic_2d: bool,
-}
+use crate::{arena::SceneArena, camera::CameraSpec};
 
 /// 视口（像素或逻辑像素）。
 #[derive(Debug, Clone, Copy, PartialEq, serde::Serialize, serde::Deserialize)]
@@ -56,8 +49,8 @@ pub struct Scene {
 }
 
 impl Scene {
-    /// 由已填充的 arena 与根节点构造。
+    /// 由已填充的 arena 与根节点构造（默认 2D 正交相机）。
     pub fn from_arena(root: NodeId, nodes: SceneArena, viewport: Viewport) -> Self {
-        Self { root, nodes, camera: CameraSpec { orthographic_2d: true }, viewport, metadata: SceneMetadata::default() }
+        Self { root, nodes, camera: CameraSpec::Orthographic2d, viewport, metadata: SceneMetadata::default() }
     }
 }

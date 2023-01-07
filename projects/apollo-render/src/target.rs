@@ -60,6 +60,20 @@ impl RgbaImage {
     pub fn non_white_count(&self) -> usize {
         self.pixels.as_chunks::<4>().0.iter().filter(|px| **px != [255, 255, 255, 255]).count()
     }
+
+    /// 确定性指纹（FNV-1a 64），用于 golden 回归。
+    pub fn fingerprint(&self) -> u64 {
+        const OFFSET: u64 = 0xcbf29ce484222325;
+        const PRIME: u64 = 0x100000001b3;
+        let mut hash = OFFSET;
+        hash = hash.wrapping_mul(PRIME) ^ u64::from(self.width);
+        hash = hash.wrapping_mul(PRIME) ^ u64::from(self.height);
+        for byte in &self.pixels {
+            hash ^= u64::from(*byte);
+            hash = hash.wrapping_mul(PRIME);
+        }
+        hash
+    }
 }
 
 /// 渲染目标。

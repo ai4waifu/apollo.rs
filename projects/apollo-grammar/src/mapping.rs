@@ -52,6 +52,16 @@ impl Mapping {
         Self { x: Some(AestheticExpr::column(x)), y: Some(AestheticExpr::column(y)), ..Self::default() }
     }
 
+    /// 设置 x、y、z 列映射。
+    pub fn xyz(x: impl Into<String>, y: impl Into<String>, z: impl Into<String>) -> Self {
+        Self {
+            x: Some(AestheticExpr::column(x)),
+            y: Some(AestheticExpr::column(y)),
+            z: Some(AestheticExpr::column(z)),
+            ..Self::default()
+        }
+    }
+
     /// 合并：右侧覆盖左侧已有通道。
     pub fn merge(&self, overlay: &Self) -> Self {
         Self {

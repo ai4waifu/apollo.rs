@@ -6,6 +6,7 @@
 #![deny(missing_docs)]
 
 mod cpu;
+mod font;
 mod prepare;
 mod report;
 mod target;

@@ -9,7 +9,7 @@ publish = false
 
 [dependencies]
 apollo-types = { workspace = true }
-apollo-scene = { workspace = true }
+apollo-data = { workspace = true }
 
 [lints.rust]
 missing_docs = "warn"
