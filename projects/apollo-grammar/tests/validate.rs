@@ -34,8 +34,7 @@ fn accepts_text_with_label_column() {
 
 #[test]
 fn rejects_missing_y() {
-    let mut mapping = Mapping::default();
-    mapping.x = Some(AestheticExpr::column("x"));
+    let mapping = Mapping { x: Some(AestheticExpr::column("x")), ..Default::default() };
     let plot = PlotSpec::new(sample_table()).mapping(mapping).layer(LayerSpec::geom_line());
     let err = validate_plot(&plot).unwrap_err();
     assert_eq!(err.code, DiagnosticCode::MissingMapping);
