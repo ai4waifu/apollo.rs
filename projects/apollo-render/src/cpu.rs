@@ -1,4 +1,4 @@
-//! CPU ???? ? ??? reference?2D + ???? 3D??
+//! CPU 栅格后端 — 确定性 reference（2D + 投影后的 3D）。
 
 use apollo_scene::{
     AxisNode, Mesh3Node, MeshNode, Point2, Points3Node, PointsNode, PolylineNode, Scene, TextNode, try_project_to_screen,
@@ -14,12 +14,12 @@ use crate::{
     walk::{Drawable, walk_drawables},
 };
 
-/// CPU ??????
+/// CPU 栅格渲染器。
 #[derive(Debug, Default, Clone, Copy)]
 pub struct CpuRasterRenderer;
 
 impl CpuRasterRenderer {
-    /// ???
+    /// 构造。
     pub const fn new() -> Self {
         Self
     }
@@ -37,7 +37,7 @@ impl Renderer for CpuRasterRenderer {
     fn render(&mut self, prepared: &PreparedScene, target: &mut RenderTarget) -> Result<FrameReport> {
         let RenderTarget::Rgba8(image) = target
         else {
-            return Err(Diagnostic::error(DiagnosticCode::UnsupportedTarget, "CpuRasterRenderer ?? Rgba8 ??"));
+            return Err(Diagnostic::error(DiagnosticCode::UnsupportedTarget, "CpuRasterRenderer 需要 Rgba8 目标"));
         };
 
         let scene = &prepared.scene;

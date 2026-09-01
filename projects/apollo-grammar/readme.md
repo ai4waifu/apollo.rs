@@ -1,14 +1,15 @@
 # `apollo-grammar`
 
-声明式 Grammar of Graphics。A1/A2 可构造、校验并编译：
+声明式 Grammar of Graphics 层，描述“数据如何成为图”。
 
 ```text
 ColumnTable | GridData | GraphData | TreeData → PlotSpec → Scene
 ```
 
-编译链路：`validate → scale/layout → scene`（图/树经 `apollo-layout`）。
+编译链路是 `validate → stat → scale → layout → scene`，其中图和树布局委托给 `apollo-layout`。编译结果是后端无关的 Scene
+IR，不直接调用 CPU、SVG 或 WGPU。
 
-拥有 `PlotSpec` 与编译入口。不拥有渲染后端。
+本 crate 拥有 `PlotSpec`、mapping、layer、geom、stat、scale、coordinate、facet 和 theme 的公共定义与编译入口，不拥有渲染后端。
 
 ```sh
 cargo test -p apollo-grammar
